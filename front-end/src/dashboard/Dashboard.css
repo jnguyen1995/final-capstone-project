@@ -1,0 +1,14 @@
+.dashboard {
+  width: 100%;
+}
+
+.reservations-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+}
+
+.reservations-table thead tr {
+  background-color: rebeccapurple;
+  color: cornsilk;
+  text-align: left;
+}

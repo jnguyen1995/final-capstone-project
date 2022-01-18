@@ -71,7 +71,7 @@ function Dashboard() {
   return (
     <main>
       <h1>Dashboard</h1>
-      <div className="dashboard">
+      <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <Button
@@ -102,8 +102,8 @@ function Dashboard() {
         Next
       </Button>
       <ErrorAlert error={reservationsError} />
-      <table class="reservations-table">
-        <thead>
+      <table class="table mt-3">
+        <thead class="thead-dark">
           <tr>
             <th>Reservation ID</th>
             <th>First Name</th>

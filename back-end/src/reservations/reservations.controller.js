@@ -22,6 +22,27 @@ async function create(req, res) {
   res.status(201).json({ data });
 }
 
+async function read(req, res) {
+  const { reservation } = res.locals;
+  const data = await service.read(reservation.reservation_id);
+  res.status(200).json({ data });
+}
+
+async function reservationExists(req, res, next) {
+  const { reservationId } = req.params;
+  const reservation = await service.read(reservationId);
+
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  } else {
+    return next({
+      status: 404,
+      message: `No reservation found for id '${reservationId}'.`,
+    });
+  }
+}
+
 const dateValid = (reservation_date) => {
   let regEx = /^\d{4}-\d{2}-\d{2}$/;
   if (!reservation_date.match(regEx)) return false; // Invalid format
@@ -121,4 +142,5 @@ function validateForm(req, res, next) {
 module.exports = {
   list: [asyncErrorBoundary(list)],
   create: [validateForm, asyncErrorBoundary(create)],
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
 };

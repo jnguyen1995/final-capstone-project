@@ -43,7 +43,6 @@ const initialFormData = {
             history.push(`/dashboard?date=${formData.reservation_date}`);
             setFormData({ ...initialFormData });
         } catch (err) {
-            console.log(err.message)
           setResErrors(err);
         }
     

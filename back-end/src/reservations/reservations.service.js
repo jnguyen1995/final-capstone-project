@@ -28,6 +28,10 @@ const create = (reservation) => {
     .then((res) => res[0]);
 };
 
+const read = (reservation_id) => {
+  return knex("reservations").select("*").where({ reservation_id }).first();
+};
+
 const dateValid = (reservation_date) => {
   let regEx = /^\d{4}-\d{2}-\d{2}$/;
   if (!reservation_date.match(regEx)) return false; // Invalid format
@@ -41,5 +45,6 @@ module.exports = {
   list,
   listResByDate,
   create,
+  read,
   dateValid,
 };

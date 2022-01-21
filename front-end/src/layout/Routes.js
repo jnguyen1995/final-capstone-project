@@ -3,10 +3,10 @@ import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
-import { today } from "../utils/date-time";
 import CreateEditReservations from "../reservations/CreateEditReservations";
 import CreateTables from "../tables/CreateTables";
 import ReserveSeats from "../reservations/ReserveSeats";
+import Search from "../search/Search";
 //<Route exact={true} path="/reservations/new">
 //<CreateEditReservations />
 //</Route>
@@ -38,6 +38,9 @@ function Routes() {
       </Route>
       <Route path="/dashboard">
         <Dashboard />
+      </Route>
+      <Route path="/search">
+        <Search />
       </Route>
       <Route>
         <NotFound />

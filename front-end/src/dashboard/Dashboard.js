@@ -7,7 +7,7 @@ import useQuery from "../utils/useQuery";
 import { Button } from "@mui/material";
 import "./Dashboard.css";
 import ListTables from "../tables/ListTables";
-import ListReservations from "../reservations/ListReservations";
+import ListOfReservations from "../reservations/ListOfReservations";
 //new comment to allow redeploy
 
 /**
@@ -65,10 +65,10 @@ function Dashboard() {
   // }
 
   const rows = reservations.map((reservation) => (
-    <ListReservations
+    <ListOfReservations
       key={reservation.reservation_id}
       reservation={reservation}
-    ></ListReservations>
+    ></ListOfReservations>
   ));
 
   const tableRows = tables.map((table) => (
@@ -123,8 +123,8 @@ function Dashboard() {
         Next
       </Button>
       <ErrorAlert error={reservationsError} />
-      <table class="table mt-3">
-        <thead class="thead-dark">
+      <table className="table mt-3">
+        <thead className="thead-dark">
           <tr>
             <th>Reservation ID</th>
             <th>First Name</th>
@@ -134,6 +134,7 @@ function Dashboard() {
             <th>Reservation Time</th>
             <th>People</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
@@ -141,8 +142,8 @@ function Dashboard() {
       <h3 className="text-left dashboard-section-header">Tables</h3>
       {tables && (
         <div className="tables-container">
-          <table class="table mt-3">
-            <thead class="thead-dark">
+          <table className="table mt-3">
+            <thead className="thead-dark">
               <tr>
                 <th>Table Name</th>
                 <th>Capacity</th>

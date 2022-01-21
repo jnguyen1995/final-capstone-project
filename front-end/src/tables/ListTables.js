@@ -29,17 +29,21 @@ const ListTables = ({ table }) => {
       <td>{table.capacity}</td>
       <td>{table.table_id}</td>
       <td>{table.reservation_id}</td>
-      <td>{table.reservation_id ? "Occupied" : "Free"}</td>
+      <td data-table-id-status={table.table_id}>
+        {table.reservation_id ? "Occupied" : "Free"}
+      </td>
       {table.reservation_id && (
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{ mr: 1 }}
-          data-table-id-finish={table.table_id}
-          onClick={() => handleFinish(table.table_id)}
-        >
-          Finish
-        </Button>
+        <td>
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{ mr: 1 }}
+            data-table-id-finish={table.table_id}
+            onClick={() => handleFinish(table.table_id)}
+          >
+            Finish
+          </Button>
+        </td>
       )}
     </tr>
   );

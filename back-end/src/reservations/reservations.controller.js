@@ -7,8 +7,12 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 async function list(req, res) {
   const reservation_date = req.query.date;
+  const mobile_number = req.query.mobile_number;
   if (reservation_date) {
     const data = await service.listResByDate(reservation_date);
+    res.json({ data });
+  } else if (mobile_number) {
+    const data = await service.search(mobile_number);
     res.json({ data });
   } else {
     const data = await service.list();

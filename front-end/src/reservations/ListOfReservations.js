@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useHistory } from "react-router";
 
-const ListReservations = ({ reservation }) => {
+const ListOfReservations = ({ reservation }) => {
   const history = useHistory();
   return (
     <>
@@ -19,33 +19,32 @@ const ListReservations = ({ reservation }) => {
           <td data-reservation-id-status={reservation.reservation_id}>
             {reservation.status}
           </td>
-          <td>
-            {reservation.status === "booked" && (
-              <a href={`/reservations/${reservation.reservation_id}/seat`}>
-                <Button variant="contained" color="secondary" sx={{ mr: 1 }}>
-                  Seat
-                </Button>
-              </a>
-            )}
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ mr: 1 }}
-              href={`/reservations/${reservation.reservation_id}/seat`}
-              onClick={() => {
-                history.push(
-                  `/reservations/${reservation.reservation_id}/seat`
-                );
-              }}
-            >
-              Edit
-            </Button>
-            <a href={`/reservations/${reservation.reservation_id}/seat`}>
+          {reservation.status === "booked" ? (
+            <td data-reservation-id-status={reservation.reservation_id}>
+              <Button
+                href={`/reservations/${reservation.reservation_id}/seat`}
+                variant="contained"
+                color="secondary"
+                sx={{ mr: 1 }}
+              >
+                Seat
+              </Button>
               <Button
                 variant="contained"
                 color="secondary"
                 sx={{ mr: 1 }}
-                href={`/reservations/${reservation.reservation_id}/seat`}
+                onClick={() => {
+                  history.push(
+                    `/reservations/${reservation.reservation_id}/seat`
+                  );
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ mr: 1 }}
                 onClick={() => {
                   history.push(
                     `/reservations/${reservation.reservation_id}/seat`
@@ -54,12 +53,12 @@ const ListReservations = ({ reservation }) => {
               >
                 Cancel
               </Button>
-            </a>
-          </td>
+            </td>
+          ) : null}
         </tr>
       )}
     </>
   );
 };
 
-export default ListReservations;
+export default ListOfReservations;

@@ -19,6 +19,8 @@ const listResByDate = (reservation_date) => {
   return knex("reservations")
     .select("*")
     .where({ reservation_date })
+    .whereNot({ status: "finished" })
+    .whereNot({ status: "cancelled" })
     .orderBy("reservation_time");
 };
 
@@ -41,10 +43,18 @@ const dateValid = (reservation_date) => {
   return d.toISOString().slice(0, 10) === reservation_date;
 };
 
+const updateStatus = (reservation_id, status) => {
+  return knex("reservations")
+    .where({ reservation_id })
+    .update({ status })
+    .then(() => read(reservation_id));
+};
+
 module.exports = {
   list,
   listResByDate,
   create,
   read,
   dateValid,
+  updateStatus,
 };

@@ -28,6 +28,24 @@ async function read(req, res) {
   res.status(200).json({ data });
 }
 
+async function update(req, res) {
+  const { reservation_id } = res.locals.reservation;
+
+  const updatedReservation = {
+    ...req.body.data,
+    reservation_id,
+  };
+  const data = await service.update(updatedReservation);
+  res.json({ data });
+}
+
+async function updateStatus(req, res) {
+  const { reservation_id } = res.locals.reservation;
+  const { status } = req.body.data;
+  const data = await service.updateStatus(reservation_id, status);
+  res.status(200).json({ data });
+}
+
 async function reservationExists(req, res, next) {
   const { reservationId } = req.params;
   const reservation = await service.read(reservationId);
@@ -131,7 +149,7 @@ function validateForm(req, res, next) {
     if (data.reservation_time >= "21:30:00") {
       next({
         status: 400,
-        message: `The restaurant closes at 10:30 P.M. Please schedule your reservation at least one hour before close.`,
+        message: `The restaurant closes at 9:30 P.M. Please schedule your reservation at least one hour before close.`,
       });
     }
   }
@@ -139,8 +157,58 @@ function validateForm(req, res, next) {
   next();
 }
 
+function checkBooked(req, res, next) {
+  const { status } = req.body.data;
+  if (status) {
+    if (status !== "booked") {
+      next({
+        status: 400,
+        message: `A new reservation cannot have a status of ${status}`,
+      });
+    }
+  }
+  next();
+}
+
+function checkStatus(req, res, next) {
+  const { status } = req.body.data;
+  const validStatuses = ["booked", "seated", "finished", "cancelled"];
+  if (!validStatuses.includes(status)) {
+    return next({
+      status: 400,
+      message: `The status property must be either ${validStatuses.join(
+        ", "
+      )}.  You entered '${status}'`,
+    });
+  }
+  next();
+}
+
+function validateFinish(req, res, next) {
+  const { status } = res.locals.reservation;
+  if (status === "finished") {
+    return next({
+      status: 400,
+      message: `Reservation status is currently finished and cannot be updated`,
+    });
+  }
+  next();
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
-  create: [validateForm, asyncErrorBoundary(create)],
+  create: [checkBooked, validateForm, asyncErrorBoundary(create)],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    checkBooked,
+    validateForm,
+    asyncErrorBoundary(update),
+  ],
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    checkStatus,
+    validateFinish,
+    asyncErrorBoundary(updateStatus),
+  ],
 };

@@ -30,6 +30,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "@emotion/styled": "^11.6.0",
     "express": "^4.17.1",
     "knex": "^0.21.12",
     "@mui/material": "^5.3.0",

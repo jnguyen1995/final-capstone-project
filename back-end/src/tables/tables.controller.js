@@ -42,6 +42,18 @@ async function tableExists(req, res, next) {
   }
 }
 
+async function tableIsFree(req, res, next) {
+  const { table } = res.locals;
+  if (table.reservation_id === null) {
+    return next({
+      status: 400,
+      message: "Table is not occupied.",
+    });
+  }
+
+  next();
+}
+
 function createValidation(req, res, next) {
   const data = req.body.data;
   if (!data) {
@@ -165,5 +177,10 @@ module.exports = {
     asyncErrorBoundary(tableExists),
     updateValidation,
     asyncErrorBoundary(update),
+  ],
+  delete: [
+    asyncErrorBoundary(tableExists),
+    asyncErrorBoundary(tableIsFree),
+    asyncErrorBoundary(destroy),
   ],
 };

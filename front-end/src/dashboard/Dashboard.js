@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables, clearTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
 import { previous, next, today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import { Button } from "@mui/material";
 import "./Dashboard.css";
+import ListTables from "../tables/ListTables";
+import ListReservations from "../reservations/ListReservations";
 //new comment to allow redeploy
 
 /**
@@ -19,9 +21,15 @@ function Dashboard() {
   const query = useQuery();
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
   const history = useHistory();
   const [date, setDate] = useState(query.get("date") || today());
   useEffect(loadDashboard, [date]);
+
+  useEffect(loadTables, []);
+  useEffect(() => {
+    history.push(`dashboard?date=${date}`);
+  }, [date, history]);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -32,27 +40,40 @@ function Dashboard() {
     return () => abortController.abort();
   }
 
-  const rows = reservations.map(
-    ({
-      reservation_id,
-      first_name,
-      last_name,
-      mobile_number,
-      reservation_date,
-      reservation_time,
-      people,
-    }) => (
-      <tr>
-        <td>{reservation_id}</td>
-        <td>{first_name}</td>
-        <td>{last_name}</td>
-        <td>{mobile_number}</td>
-        <td>{reservation_date}</td>
-        <td>{reservation_time}</td>
-        <td>{people}</td>
-      </tr>
-    )
-  );
+  function loadTables() {
+    const abortController = new AbortController();
+    setReservationsError(null);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setReservationsError);
+    return () => abortController.abort();
+  }
+
+  // async function handleFinish(tableId) {
+  //   if (
+  //     window.confirm(
+  //       "Is this table ready to seat new guests?  This cannot be undone."
+  //     )
+  //   ) {
+  //     try {
+  //       await clearTable(tableId);
+  //       history.go();
+  //     } catch (err) {
+  //       setReservationsError(err);
+  //     }
+  //   }
+  // }
+
+  const rows = reservations.map((reservation) => (
+    <ListReservations
+      key={reservation.reservation_id}
+      reservation={reservation}
+    ></ListReservations>
+  ));
+
+  const tableRows = tables.map((table) => (
+    <ListTables key={table.table_id} table={table}></ListTables>
+  ));
 
   function handleToday() {
     history.push(`dashboard?date=${date}`);
@@ -112,10 +133,29 @@ function Dashboard() {
             <th>Reservation Date</th>
             <th>Reservation Time</th>
             <th>People</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
+      <h3 className="text-left dashboard-section-header">Tables</h3>
+      {tables && (
+        <div className="tables-container">
+          <table class="table mt-3">
+            <thead class="thead-dark">
+              <tr>
+                <th>Table Name</th>
+                <th>Capacity</th>
+                <th>Table ID</th>
+                <th>Reservation ID</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>{tableRows}</tbody>
+          </table>
+        </div>
+      )}
     </main>
   );
 }

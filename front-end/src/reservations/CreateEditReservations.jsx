@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import { useHistory } from "react-router-dom";
-import {createReservation} from "../utils/api";
+import { useHistory, useParams } from "react-router-dom";
+import {createReservation, readReservation, updateReservation} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import {asDateString} from "../utils/date-time";
 import { Button } from "@mui/material";
@@ -21,6 +21,33 @@ const initialFormData = {
     const [formData, setFormData] = useState({...initialFormData });
     const [resErrors, setResErrors] = useState(null);
 
+    const {reservationId} = useParams();
+
+    useEffect(() => {
+      const abortController = new AbortController();
+  
+      async function loadReservation() {
+        try {
+          if (reservationId) {
+            const response = await readReservation(
+              reservationId,
+              abortController.signal
+            );
+            setFormData(response);
+          } else {
+            // if navigating to create route directly from edit route, clear the form
+            setFormData({ ...initialFormData })
+          }
+        } catch (err) {
+          setResErrors(err);
+        }
+      }
+      loadReservation();
+  
+      return () => abortController.abort();
+      // eslint-disable-next-line
+    }, [reservationId]);
+
     const handleChange = (e) => {
         setFormData({
           ...formData,
@@ -38,11 +65,15 @@ const initialFormData = {
         e.preventDefault();
         const abortController = new AbortController();
         try {
-
+            if (reservationId){
+              await updateReservation(formData, abortController.signal);
+              history.push(`/dashboard?date=${formData.reservation_date}`)
+              setFormData({...initialFormData});
+            } else {
             await createReservation(formData, abortController.signal);
             history.push(`/dashboard?date=${formData.reservation_date}`);
             setFormData({ ...initialFormData });
-        } catch (err) {
+        }} catch (err) {
           setResErrors(err);
         }
     
@@ -50,7 +81,11 @@ const initialFormData = {
       }
       return(
           <div> 
-              {console.log(resErrors)}
+            {reservationId ? (
+        <h1 className="text-center">Edit a Reservation</h1>
+      ) : (
+        <h1 className="text-center">Create a Reservation</h1>
+      )}
 <ErrorAlert error={resErrors} />
 
 <form onSubmit={handleSubmit}>

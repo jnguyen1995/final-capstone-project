@@ -2,9 +2,26 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useHistory } from "react-router";
+import { cancelReservation } from "../utils/api";
 
 const ListOfReservations = ({ reservation }) => {
+  const [errors, setErrors] = useState(false);
   const history = useHistory();
+  async function handleCancel(reservationId) {
+    if (
+      window.confirm(
+        "Do you want to cancel this reservation? This cannot be undone."
+      )
+    ) {
+      try {
+        await cancelReservation(reservationId);
+        history.go();
+      } catch (err) {
+        setErrors(err);
+      }
+    }
+  }
+
   return (
     <>
       {reservation.status !== "finished" && (
@@ -33,11 +50,7 @@ const ListOfReservations = ({ reservation }) => {
                 variant="contained"
                 color="secondary"
                 sx={{ mr: 1 }}
-                onClick={() => {
-                  history.push(
-                    `/reservations/${reservation.reservation_id}/seat`
-                  );
-                }}
+                href={`/reservations/${reservation.reservation_id}/edit`}
               >
                 Edit
               </Button>
@@ -46,10 +59,9 @@ const ListOfReservations = ({ reservation }) => {
                 color="secondary"
                 sx={{ mr: 1 }}
                 onClick={() => {
-                  history.push(
-                    `/reservations/${reservation.reservation_id}/seat`
-                  );
+                  handleCancel(reservation.reservation_id);
                 }}
+                data-reservation-id-cancel={`${reservation.reservation_id}`}
               >
                 Cancel
               </Button>

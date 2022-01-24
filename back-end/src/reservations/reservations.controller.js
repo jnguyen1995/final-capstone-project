@@ -199,9 +199,21 @@ function validateFinish(req, res, next) {
   next();
 }
 
+function hasData(req, res, next) {
+  const data = req.body.data;
+  if (!data) {
+    next({
+      status: 400,
+      message: `Request is missing 'data'.`,
+    });
+  } else {
+    next();
+  }
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
-  create: [checkBooked, validateForm, asyncErrorBoundary(create)],
+  create: [hasData, checkBooked, validateForm, asyncErrorBoundary(create)],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   update: [
     asyncErrorBoundary(reservationExists),

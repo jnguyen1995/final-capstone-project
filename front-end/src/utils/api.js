@@ -110,6 +110,39 @@ export async function updateTable(reservationId, tableId, signal) {
   return await fetchJson(url, options);
 }
 
+export async function readReservation(reservationId, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}`;
+  const options = {
+    method: "GET",
+    headers,
+    signal,
+  };
+  // format reservation date so it's usable on the edit form
+  return await fetchJson(url, options).then(formatReservationDate);
+}
+
+export async function updateReservation(reservation, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation.reservation_id}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: reservation }),
+    signal,
+  };
+  return await fetchJson(url, options, reservation);
+}
+
+export async function cancelReservation(reservationId, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}/status`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: { status: "cancelled" } }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
+
 export async function clearTable(tableId) {
   const url = `${API_BASE_URL}/tables/${tableId}/seat`;
   const options = {

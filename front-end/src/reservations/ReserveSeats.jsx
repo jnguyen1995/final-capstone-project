@@ -24,7 +24,7 @@ const ReserveSeats = () => {
         setSelectValue({ [e.target.name]: e.target.value });
       }
     
-
+      //Handle Submit calls update table and updates the table with the reservation id
     const handleSubmit = (e) => {
         const abortController = new AbortController()
         e.preventDefault();

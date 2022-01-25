@@ -2,12 +2,9 @@ import React, {useState, useEffect} from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {createReservation, readReservation, updateReservation} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import {asDateString} from "../utils/date-time";
 import { Button } from "@mui/material";
-const dayjs = require("dayjs");
 
 function CreateEditReservations() {
-const date = new Date();
 const initialFormData = {
     first_name: "",
     last_name: "",

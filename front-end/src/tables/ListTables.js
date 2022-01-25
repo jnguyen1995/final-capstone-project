@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { listReservations, clearTable } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
+import { clearTable } from "../utils/api";
 import { useHistory } from "react-router-dom";
+import ErrorAlert from "../layout/ErrorAlert";
 
 const ListTables = ({ table }) => {
   const [errors, setErrors] = useState(null);
@@ -24,28 +24,31 @@ const ListTables = ({ table }) => {
   }
 
   return (
-    <tr>
-      <td>{table.table_name}</td>
-      <td>{table.capacity}</td>
-      <td>{table.table_id}</td>
-      <td>{table.reservation_id}</td>
-      <td data-table-id-status={table.table_id}>
-        {table.reservation_id ? "Occupied" : "Free"}
-      </td>
-      {table.reservation_id && (
-        <td>
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{ mr: 1 }}
-            data-table-id-finish={table.table_id}
-            onClick={() => handleFinish(table.table_id)}
-          >
-            Finish
-          </Button>
+    <>
+      <ErrorAlert error={errors} />
+      <tr>
+        <td>{table.table_name}</td>
+        <td>{table.capacity}</td>
+        <td>{table.table_id}</td>
+        <td>{table.reservation_id}</td>
+        <td data-table-id-status={table.table_id}>
+          {table.reservation_id ? "Occupied" : "Free"}
         </td>
-      )}
-    </tr>
+        {table.reservation_id && (
+          <td>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ mr: 1 }}
+              data-table-id-finish={table.table_id}
+              onClick={() => handleFinish(table.table_id)}
+            >
+              Finish
+            </Button>
+          </td>
+        )}
+      </tr>
+    </>
   );
 };
 

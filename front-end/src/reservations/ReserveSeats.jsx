@@ -56,7 +56,7 @@ const ReserveSeats = () => {
             <Button
               className="cancel-btn"
               variant="contained"
-              color="warning"
+              color="error"
               sx={{ mr: 1 }}
               onClick={history.goBack}
             >

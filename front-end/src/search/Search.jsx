@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import ErrorAlert from "../layout/ErrorAlert"
 import { listReservations } from "../utils/api";
 import ListOfReservations from "../reservations/ListOfReservations";
-import { Button } from "@mui/material";
 
 const Search = () => {
     const [searchMobile, setSearchMobile] = useState("");

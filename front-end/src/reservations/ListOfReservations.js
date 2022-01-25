@@ -24,6 +24,7 @@ const ListOfReservations = ({ reservation }) => {
 
   return (
     <>
+      <ErrorAlert error={errors} />
       {reservation.status !== "finished" && (
         <tr>
           <td>{reservation.reservation_id}</td>

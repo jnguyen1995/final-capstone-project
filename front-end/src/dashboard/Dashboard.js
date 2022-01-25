@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables, clearTable } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { useLocation, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { previous, next, today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import { Button } from "@mui/material";
